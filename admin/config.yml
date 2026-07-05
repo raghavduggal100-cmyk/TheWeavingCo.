@@ -1,0 +1,33 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/products"
+public_folder: "/images/products"
+
+site_url: https://theweavingco.netlify.app
+
+collections:
+  - name: "products"
+    label: "Products"
+    files:
+      - file: "content/products.json"
+        label: "Product Catalog"
+        name: "product_catalog"
+        fields:
+          - label: "Products"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.price}}"
+            fields:
+              - { label: "Product Name", name: "name", widget: "string" }
+              - { label: "Slug (unique ID — letters, numbers, dashes only. Don't change this after the product is live, or its link will break)", name: "slug", widget: "string", hint: "example: ivory-bloom-jamawar-stoll" }
+              - { label: "Price", name: "price", widget: "string", hint: "Include the ₹ symbol, e.g. ₹5,499" }
+              - { label: "Original / Crossed-out Price", name: "was_price", widget: "string", required: false, hint: "Optional. Include ₹, e.g. ₹9,999" }
+              - { label: "Badge", name: "badge", widget: "string", required: false, hint: "Optional. e.g. Bestseller, New, 40% off, Staff pick" }
+              - { label: "Material / Details line", name: "material", widget: "string", required: false, hint: "e.g. Women · 100% pure pashmina" }
+              - label: "Photos"
+                name: "photos"
+                widget: "list"
+                field: { label: "Photo", name: "photo", widget: "image" }
+                hint: "Upload as many photos as you like. The first photo is used as the cover image on the shop grid."
