@@ -41,11 +41,110 @@ function twcBuildPcardHtml(p) {
     + '</div>\n</div>';
 }
 
+var TWC_SHOP_FILTER = 'all';
+
+/* Categories map to product.category exactly; a few drawer links (pashmina,
+   cashmere) don't have a dedicated category yet, so they fall back to a
+   keyword search across name + material. 'sale' and 'new' are derived. */
+function twcProductsForFilter(key) {
+  if (!key || key === 'all') return TWC_PRODUCTS;
+  if (key === 'sale') return TWC_PRODUCTS.filter(function (p) { return !!p.was_price; });
+  if (key === 'new') return TWC_PRODUCTS.filter(function (p) { return (p.badge || '').toLowerCase().indexOf('new') !== -1; });
+  if (key === 'women' || key === 'men' || key === 'stoles' || key === 'gifts') {
+    return TWC_PRODUCTS.filter(function (p) { return p.category === key; });
+  }
+  var needle = key.toLowerCase();
+  return TWC_PRODUCTS.filter(function (p) {
+    return ((p.name || '') + ' ' + (p.material || '')).toLowerCase().indexOf(needle) !== -1;
+  });
+}
+
 function twcRenderProductGrids() {
-  var home = document.getElementById('prod-grid');
-  var shop = document.getElementById('shop-grid');
+  var home = document.querySelector('.prod-grid');
+  var shop = document.querySelector('.shop-grid');
   if (home) home.innerHTML = TWC_PRODUCTS.slice(0, 6).map(twcBuildPcardHtml).join('\n');
-  if (shop) shop.innerHTML = TWC_PRODUCTS.map(twcBuildPcardHtml).join('\n');
+  if (shop) {
+    var list = twcProductsForFilter(TWC_SHOP_FILTER);
+    shop.innerHTML = list.length
+      ? list.map(twcBuildPcardHtml).join('\n')
+      : '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#7a6e5a;font-size:13px;">No products in this category yet — check back soon.</div>';
+  }
+}
+
+/* Shop page filter chips call this directly */
+function twcFilterShop(key, chipEl) {
+  TWC_SHOP_FILTER = key;
+  document.querySelectorAll('.filter-chip').forEach(function (c) { c.classList.remove('active'); });
+  if (chipEl) {
+    chipEl.classList.add('active');
+  } else {
+    document.querySelectorAll('.filter-chip').forEach(function (c) {
+      if (c.getAttribute('data-filter') === key) c.classList.add('active');
+    });
+  }
+  twcRenderProductGrids();
+}
+
+/* Drawer / home category links: go to Shop and pre-apply a category filter */
+function twcGoShopFiltered(key) {
+  twcCloseAll();
+  twcGo('shop', 1);
+  twcFilterShop(key, null);
+}
+
+/* Generic navigation for standalone pages that have no top-nav button
+   (policy pages, track order, account, etc.) — mirrors twcGo() but for twcGo2 */
+function twcGoPage(id) {
+  twcCloseAll();
+  twcGo2(id);
+}
+
+/* Wholesale: send to the Contact page with the enquiry type pre-set */
+function twcGoWholesale() {
+  twcCloseAll();
+  twcGo('contact', 4);
+  setTimeout(function () {
+    var sel = document.querySelector('#page-contact select[aria-label="Enquiry type"]');
+    if (sel) sel.value = 'Wholesale';
+    var form = document.querySelector('#page-contact .contact-form');
+    if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 60);
+}
+
+/* Track order: honest lookup — we don't have a live order-status backend yet,
+   so we point the customer to the fastest real channel instead of faking a result */
+function twcTrackOrder(evt) {
+  if (evt) evt.preventDefault();
+  var idEl = document.getElementById('twcTrackOrderId');
+  var emailEl = document.getElementById('twcTrackOrderEmail');
+  var out = document.getElementById('twcTrackOrderResult');
+  var orderId = idEl ? idEl.value.trim() : '';
+  var email = emailEl ? emailEl.value.trim() : '';
+  if (!out) return false;
+  if (!orderId || !email) {
+    out.innerHTML = '<div class="twc-form-note twc-form-note-error">Please enter both your order ID and the email used at checkout.</div>';
+    return false;
+  }
+  out.innerHTML = '<div class="twc-form-note">Thanks — we\'ve noted order <strong>' + twcAttrEscape(orderId) + '</strong>. '
+    + 'For the fastest live update, check the shipping confirmation email sent to <strong>' + twcAttrEscape(email) + '</strong>, '
+    + 'or WhatsApp us at <strong>+91 98765 43210</strong> with your order ID and we\'ll reply within a few hours.</div>';
+  return false;
+}
+
+/* Account page: accounts aren't live yet — collect interest honestly instead of faking a login */
+function twcNotifyMe(evt) {
+  if (evt) evt.preventDefault();
+  var emailEl = document.getElementById('twcNotifyEmail');
+  var out = document.getElementById('twcNotifyResult');
+  var email = emailEl ? emailEl.value.trim() : '';
+  if (!out) return false;
+  if (!email || email.indexOf('@') === -1) {
+    out.innerHTML = '<div class="twc-form-note twc-form-note-error">Please enter a valid email address.</div>';
+    return false;
+  }
+  out.innerHTML = '<div class="twc-form-note">Thanks! We\'ll email <strong>' + twcAttrEscape(email) + '</strong> the moment accounts launch. In the meantime you can check out as a guest — we\'ll send order updates to your email either way.</div>';
+  if (emailEl) emailEl.value = '';
+  return false;
 }
 
 function twcFindProduct(slug) {
