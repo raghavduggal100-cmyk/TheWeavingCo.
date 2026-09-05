@@ -285,6 +285,7 @@
                   ? (p.badge ? h('div', { key: 'b', className: 'twcp-badge' }, p.badge) : null)
                   : h('div', { key: 'b', className: 'twcp-badge twcp-oos' }, 'Out of stock'),
                 p.is_bestseller ? h('div', { key: 'bs', style: { fontSize: '9px', color: '#a5844f', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '4px' } }, '\u2605 SHOWN IN HOMEPAGE BESTSELLERS') : null,
+                (p.is_pashmina || p.is_cashmere) ? h('div', { key: 'tags', style: { fontSize: '9px', color: '#7a9bb0', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '4px' } }, [p.is_pashmina ? 'PASHMINA' : null, (p.is_pashmina && p.is_cashmere) ? ' \u00b7 ' : null, p.is_cashmere ? 'CASHMERE' : null].filter(Boolean).join('')) : null,
                 h('div', { key: 'n', className: 'twcp-pname' }, p.name),
                 h('div', { key: 'm', className: 'twcp-pmat' }, p.material),
                 h('span', { key: 'pr', className: 'twcp-pprice' }, p.price),

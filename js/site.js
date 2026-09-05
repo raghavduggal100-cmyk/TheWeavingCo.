@@ -49,13 +49,15 @@ function twcBuildPcardHtml(p) {
 
 var TWC_SHOP_FILTER = 'all';
 
-/* Categories map to product.category exactly; a few drawer links (pashmina,
-   cashmere) don't have a dedicated category yet, so they fall back to a
-   keyword search across name + material. 'sale' and 'new' are derived. */
+/* Categories map to product.category exactly. Pashmina/Cashmere are separate
+   admin toggles (is_pashmina/is_cashmere) so a product can sit under a main
+   category AND also surface under those menu links. 'sale' and 'new' are derived. */
 function twcProductsForFilter(key) {
   if (!key || key === 'all') return TWC_PRODUCTS;
   if (key === 'sale') return TWC_PRODUCTS.filter(function (p) { return !!p.was_price; });
   if (key === 'new') return TWC_PRODUCTS.filter(function (p) { return (p.badge || '').toLowerCase().indexOf('new') !== -1; });
+  if (key === 'pashmina') return TWC_PRODUCTS.filter(function (p) { return !!p.is_pashmina; });
+  if (key === 'cashmere') return TWC_PRODUCTS.filter(function (p) { return !!p.is_cashmere; });
   if (key === 'women' || key === 'men' || key === 'stoles' || key === 'gifts') {
     return TWC_PRODUCTS.filter(function (p) { return p.category === key; });
   }

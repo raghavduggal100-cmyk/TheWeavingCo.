@@ -40,12 +40,22 @@ collections:
                   - { label: "Stoles & scarves", value: "stoles" }
                   - { label: "Gift sets", value: "gifts" }
                 default: "women"
-                hint: "Controls which shop filter/category this product appears under."
+                hint: "Controls which shop filter this product appears under (Women/Men/Stoles/Gifts menus). Use the two toggles below for Pashmina and Cashmere \u2014 a product can belong to a category above AND be tagged Pashmina/Cashmere at the same time."
               - label: "In Stock"
                 name: "in_stock"
                 widget: "boolean"
                 default: true
                 hint: "Turn this off to show 'Out of stock' on the site and disable Add to Cart/Buy Now for this product. Turn back on once restocked."
+              - label: "Show under 'Pashmina Shawls' menu"
+                name: "is_pashmina"
+                widget: "boolean"
+                default: false
+                hint: "Turn this on if this product should also appear when a shopper clicks 'Pashmina Shawls' in the menu."
+              - label: "Show under 'Cashmere' menu"
+                name: "is_cashmere"
+                widget: "boolean"
+                default: false
+                hint: "Turn this on if this product should also appear when a shopper clicks 'Cashmere' in the menu."
               - label: "Show in Homepage Bestsellers"
                 name: "is_bestseller"
                 widget: "boolean"
