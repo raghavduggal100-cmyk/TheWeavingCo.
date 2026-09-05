@@ -1,75 +1,75 @@
 {
   "products": [
     {
-      "slug": "ivory-bloom-jamawar-stoll-multicolour-fl",
-      "name": "Ivory Bloom Jamawar Stoll — Multicolour Floral All-Over",
-      "material": "Women · 100% pure pashmina",
-      "price": "₹5,499",
-      "was_price": "₹9,999",
-      "badge": "Bestseller",
       "photos": [
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-1.jpg",
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-2.jpg",
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-3.jpg",
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-4.jpg"
       ],
-      "category": "stoles",
-      "in_stock": true
+      "badge": "Bestseller",
+      "material": "Women · 100% pure pashmina",
+      "price": "₹5,999",
+      "name": "Ivory Bloom Jamawar Stoll — Multicolour Floral All-Over",
+      "slug": "ivory-bloom-jamawar-stoll-multicolour-fl",
+      "was_price": "₹9,999",
+      "in_stock": true,
+      "category": "stoles"
     },
     {
-      "slug": "kani-weave-shawl-burgundy",
-      "name": "Kani weave shawl — Burgundy",
+      "photos": [],
+      "badge": "New",
       "material": "Women · Fine Merino wool",
       "price": "₹6,299",
+      "name": "Kani weave shawl — Burgundy",
+      "slug": "kani-weave-shawl-burgundy",
       "was_price": "₹10,499",
-      "badge": "New",
-      "photos": [],
-      "category": "women",
-      "in_stock": true
+      "in_stock": true,
+      "category": "women"
     },
     {
-      "slug": "bamboo-silk-stole-ivory-and-gold",
-      "name": "Bamboo silk stole — Ivory & gold",
+      "photos": [],
+      "badge": "40% off",
       "material": "Women · Bamboo silk blend",
       "price": "₹2,199",
+      "name": "Bamboo silk stole — Ivory & gold",
+      "slug": "bamboo-silk-stole-ivory-and-gold",
       "was_price": "₹3,699",
-      "badge": "40% off",
-      "photos": [],
-      "category": "stoles",
-      "in_stock": true
+      "in_stock": true,
+      "category": "stoles"
     },
     {
-      "slug": "kaani-mens-lohi-black",
-      "name": "Kaani mens lohi — Black",
+      "photos": [],
+      "badge": "Bestseller",
       "material": "Men · Merino wool",
       "price": "₹6,299",
+      "name": "Kaani mens lohi — Black",
+      "slug": "kaani-mens-lohi-black",
       "was_price": "₹10,499",
-      "badge": "Bestseller",
-      "photos": [],
-      "category": "men",
-      "in_stock": true
+      "in_stock": true,
+      "category": "men"
     },
     {
-      "slug": "aari-embroidery-stole-navy",
-      "name": "Aari embroidery stole — Navy",
+      "photos": [],
+      "badge": "Staff pick",
       "material": "Women · Pure pashmina",
       "price": "₹4,299",
+      "name": "Aari embroidery stole — Navy",
+      "slug": "aari-embroidery-stole-navy",
       "was_price": "₹7,500",
-      "badge": "Staff pick",
-      "photos": [],
-      "category": "stoles",
-      "in_stock": true
+      "in_stock": true,
+      "category": "stoles"
     },
     {
-      "slug": "heritage-pashmina-gift-box",
-      "name": "Heritage pashmina gift box",
+      "photos": [],
+      "badge": "Gift fav.",
       "material": "Gift set · 2 pieces",
       "price": "₹8,999",
+      "name": "Heritage pashmina gift box",
+      "slug": "heritage-pashmina-gift-box",
       "was_price": "₹14,999",
-      "badge": "Gift fav.",
-      "photos": [],
-      "category": "gifts",
-      "in_stock": true
+      "in_stock": true,
+      "category": "gifts"
     }
   ]
 }
