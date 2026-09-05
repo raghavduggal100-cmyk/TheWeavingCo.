@@ -46,6 +46,11 @@ collections:
                 widget: "boolean"
                 default: true
                 hint: "Turn this off to show 'Out of stock' on the site and disable Add to Cart/Buy Now for this product. Turn back on once restocked."
+              - label: "Show in Homepage Bestsellers"
+                name: "is_bestseller"
+                widget: "boolean"
+                default: false
+                hint: "Turn this on to feature this product in the Bestsellers section on the homepage. Turn it off to remove it from the homepage (it will still be visible in the Shop). Aim for around 10-15 products at a time so the homepage doesn't get too long."
               - label: "Photos"
                 name: "photos"
                 widget: "list"
@@ -260,3 +265,55 @@ collections:
                       - { label: "Icon (do not edit)", name: "icon", widget: "string" }
                       - { label: "Name / Title", name: "name", widget: "string" }
                       - { label: "Role", name: "role", widget: "string" }
+          - label: "Contact Page"
+            name: "contact"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Hero (top banner)"
+                name: "hero"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "label", widget: "string" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "text" }
+              - { label: "Email address", name: "email", widget: "string" }
+              - { label: "WhatsApp number", name: "whatsapp_number", widget: "string" }
+              - { label: "WhatsApp hours", name: "whatsapp_hours", widget: "string", hint: "e.g. Mon\u2013Sat, 10am\u20136pm" }
+              - { label: "Office location", name: "office_location", widget: "string" }
+              - { label: "Wholesale enquiries email", name: "wholesale_email", widget: "string" }
+              - label: "FAQs shown on this page"
+                name: "faqs"
+                widget: "list"
+                summary: "{{fields.q}}"
+                fields:
+                  - { label: "Question", name: "q", widget: "string" }
+                  - { label: "Answer", name: "a", widget: "text" }
+
+  - name: "hero_slides"
+    label: "Homepage Hero Slideshow"
+    files:
+      - file: "content/hero-slides.json"
+        label: "Hero Slideshow"
+        name: "hero_slideshow"
+        fields:
+          - { label: "Small label above title", name: "eyebrow", widget: "string" }
+          - { label: "Title \u2014 line 1", name: "title_line1", widget: "string" }
+          - { label: "Title \u2014 line 2", name: "title_line2", widget: "string", required: false }
+          - { label: "Subtext", name: "sub", widget: "text" }
+          - { label: "Button label (before the arrow)", name: "cta", widget: "string" }
+          - label: "Slides"
+            name: "slides"
+            widget: "list"
+            summary: "{{fields.type}}"
+            hint: "Add as many slides as you like. Each can be a photo or a short video (autoplays muted and loops, so keep videos short \u2014 a few seconds \u2014 for fast loading)."
+            fields:
+              - label: "Type"
+                name: "type"
+                widget: "select"
+                options:
+                  - { label: "Photo", value: "image" }
+                  - { label: "Video", value: "video" }
+                default: "image"
+              - { label: "File", name: "src", widget: "file", hint: "Upload a photo (jpg/png) or a video (mp4)." }

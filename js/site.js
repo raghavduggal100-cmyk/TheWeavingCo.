@@ -68,7 +68,12 @@ function twcProductsForFilter(key) {
 function twcRenderProductGrids() {
   var home = document.querySelector('.prod-grid');
   var shop = document.querySelector('.shop-grid');
-  if (home) home.innerHTML = TWC_PRODUCTS.slice(0, 12).map(twcBuildPcardHtml).join('\n');
+  if (home) {
+    var bestsellers = TWC_PRODUCTS.filter(function (p) { return !!p.is_bestseller; }).slice(0, 16);
+    home.innerHTML = bestsellers.length
+      ? bestsellers.map(twcBuildPcardHtml).join('\n')
+      : '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#7a6e5a;font-size:13px;">No bestsellers marked yet \u2014 toggle \u201cShow in Homepage Bestsellers\u201d on a product in the admin portal.</div>';
+  }
   if (shop) {
     var list = twcProductsForFilter(TWC_SHOP_FILTER);
     shop.innerHTML = list.length
@@ -469,6 +474,9 @@ function twcBuildReviewCardHtml(r) {
 function twcBuildValueCardHtml(v) {
   return '<div class="value-card"><div class="value-title">' + twcAttrEscape(v.title || '') + '</div><div class="value-body">' + twcAttrEscape(v.body || '') + '</div></div>';
 }
+function twcBuildFaqItemHtml(item) {
+  return '<div class="faq-item"><div class="faq-q">' + twcAttrEscape(item.q || '') + '</div><div class="faq-a">' + twcAttrEscape(item.a || '') + '</div></div>';
+}
 function twcBuildTeamCardHtml(m) {
   return '<div class="team-card"><div class="team-avatar"><i class="ti ' + (m.icon || 'ti-user') + '" aria-hidden="true"></i></div><div class="team-name">' + twcAttrEscape(m.name || '') + '</div><div class="team-role">' + twcAttrEscape(m.role || '') + '</div></div>';
 }
@@ -583,6 +591,20 @@ async function twcLoadSiteContent() {
     var teamGrid = document.getElementById('tc-about-team-grid');
     if (teamGrid && about.team.members) teamGrid.innerHTML = about.team.members.map(twcBuildTeamCardHtml).join('');
   }
+
+  var contact = (data && data.contact) || {};
+  if (contact.hero) {
+    twcSetText('tc-contact-hero-label', contact.hero.label);
+    twcSetText('tc-contact-hero-title', contact.hero.title);
+    twcSetText('tc-contact-hero-sub', contact.hero.sub);
+  }
+  twcSetText('tc-contact-email', contact.email);
+  var waEl = document.getElementById('tc-contact-whatsapp');
+  if (waEl) waEl.textContent = [contact.whatsapp_number, contact.whatsapp_hours].filter(Boolean).join(' · ');
+  twcSetText('tc-contact-office', contact.office_location);
+  twcSetText('tc-contact-wholesale', contact.wholesale_email);
+  var faqWrap = document.getElementById('tc-contact-faqs');
+  if (faqWrap && contact.faqs) faqWrap.innerHTML = contact.faqs.map(twcBuildFaqItemHtml).join('');
 }
 
 /* ── Analytics (Google Analytics 4) + cookie consent ──
@@ -656,10 +678,120 @@ function twcTrackViewItem(product, priceNum) {
   });
 }
 
+/* ── Hero slideshow (CMS-managed slides + text) ──
+   The drag/swipe/autoplay behaviour below is copied over unchanged from the
+   original inline version — only *when* it runs changed (now after the CMS
+   slide data has been fetched and rendered), not *how* it behaves. */
+function twcBuildHeroSlideHtml(slide, i) {
+  var activeClass = i === 0 ? ' active' : '';
+  if (slide.type === 'video') {
+    return '<div class="ths-slide' + activeClass + '"><video class="ths-slide-video" src="' + slide.src + '" autoplay muted loop playsinline></video></div>';
+  }
+  return '<div class="ths-slide' + activeClass + '" style="background-image:url(\'' + slide.src + '\')"></div>';
+}
+function twcBuildHeroDotHtml(i) {
+  return '<button class="ths-dot' + (i === 0 ? ' active' : '') + '" onclick="thsGoTo(' + i + ')" aria-label="Slide ' + (i + 1) + '"></button>';
+}
+
+function twcSetupHeroCarousel() {
+  var wrap = document.getElementById('heroSlides');
+  var track = document.getElementById('thsTrack');
+  if (!wrap || !track) return;
+  var slides = track.querySelectorAll('.ths-slide');
+  var dots = document.querySelectorAll('#heroSlides .ths-dot');
+  var n = slides.length;
+  if (!n) return;
+  var idx = 0, timer, wrapWidth = 0, dragging = false, startX = 0, dragDelta = 0, activePointerId = null;
+
+  function measure() { wrapWidth = wrap.getBoundingClientRect().width || 1; }
+  function applyTransform(px) { track.style.transform = 'translateX(' + px + 'px)'; }
+  function baseOffsetFor(i) { return -i * wrapWidth; }
+  function show(i) {
+    idx = ((i % n) + n) % n;
+    track.classList.remove('ths-nodrag-transition');
+    applyTransform(baseOffsetFor(idx));
+    dots.forEach(function (d, j) { d.classList.toggle('active', j === idx); });
+  }
+  function next() { show(idx + 1); }
+  function restart() { clearInterval(timer); timer = setInterval(next, 4500); }
+  window.thsGoTo = function (i) { show(i); restart(); };
+
+  function pointX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+
+  function onDown(e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.pointerType === 'mouse') e.preventDefault();
+    dragging = true;
+    activePointerId = e.pointerId;
+    measure();
+    startX = pointX(e);
+    dragDelta = 0;
+    track.classList.add('ths-nodrag-transition');
+    clearInterval(timer);
+    wrap.classList.add('ths-grabbing');
+    if (wrap.setPointerCapture && e.pointerId != null) {
+      try { wrap.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    dragDelta = pointX(e) - startX;
+    applyTransform(baseOffsetFor(idx) + dragDelta);
+  }
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    wrap.classList.remove('ths-grabbing');
+    var threshold = Math.min(60, wrapWidth * 0.12);
+    if (dragDelta > threshold) show(idx - 1);
+    else if (dragDelta < -threshold) show(idx + 1);
+    else show(idx);
+    restart();
+  }
+
+  wrap.addEventListener('pointerdown', onDown);
+  wrap.addEventListener('pointermove', onMove);
+  wrap.addEventListener('pointerup', onUp);
+  wrap.addEventListener('pointercancel', onUp);
+  wrap.addEventListener('pointerleave', function (e) { if (dragging && e.pointerId === activePointerId) onUp(); });
+  wrap.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  window.addEventListener('resize', function () { measure(); track.classList.add('ths-nodrag-transition'); applyTransform(baseOffsetFor(idx)); });
+
+  measure();
+  show(0);
+  restart();
+}
+
+async function twcLoadHeroSlides() {
+  var track = document.getElementById('thsTrack');
+  var dotsWrap = document.getElementById('thsDots');
+  if (!track || !dotsWrap) return;
+  var data;
+  try {
+    var res = await fetch('/content/hero-slides.json', { cache: 'no-store' });
+    data = await res.json();
+  } catch (e) {
+    console.error('Could not load hero-slides.json', e);
+    return;
+  }
+  twcSetText('tc-hs-eyebrow', data.eyebrow);
+  twcSetLines('tc-hs-title', data.title_line1, data.title_line2);
+  twcSetText('tc-hs-sub', data.sub);
+  var ctaBtn = document.getElementById('tc-hs-cta');
+  if (ctaBtn && data.cta) ctaBtn.textContent = data.cta + ' →';
+
+  var slides = data.slides || [];
+  if (!slides.length) return;
+  track.innerHTML = slides.map(twcBuildHeroSlideHtml).join('');
+  dotsWrap.innerHTML = slides.map(function (s, i) { return twcBuildHeroDotHtml(i); }).join('');
+  twcSetupHeroCarousel();
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   twcLoadCart();
   twcLoadProducts();
   twcLoadGallery();
   twcLoadSiteContent();
+  twcLoadHeroSlides();
   twcInitCookieConsent();
 });

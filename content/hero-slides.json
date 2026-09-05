@@ -1,0 +1,12 @@
+{
+  "eyebrow": "THE WEAVING CO.",
+  "title_line1": "Handwoven heritage,",
+  "title_line2": "delivered to your door",
+  "sub": "GI-tagged, Woolmark-certified pashmina & cashmere — crafted by master artisans in Amritsar.",
+  "cta": "Explore the collection",
+  "slides": [
+    { "type": "image", "src": "/images/hero/hero-slide-1.jpg" },
+    { "type": "image", "src": "/images/hero/hero-slide-2.jpg" },
+    { "type": "image", "src": "/images/hero/hero-slide-3.jpg" }
+  ]
+}

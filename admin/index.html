@@ -215,7 +215,7 @@
             }))
           ]),
 
-          h('div', { key: 'aboutteam', className: 'twcp-section', style: { borderBottom: 'none' } }, [
+          h('div', { key: 'aboutteam', className: 'twcp-section' }, [
             h('h2', { key: 't', className: 'twcp-h2' }, get(entry, about.concat(['team', 'title']))),
             h('p', { key: 's', className: 'twcp-sub' }, get(entry, about.concat(['team', 'sub']))),
             h('div', { key: 'grid', className: 'twcp-grid' }, team.map(function (m, i) {
@@ -224,6 +224,41 @@
                 h('div', { key: 'd', className: 'twcp-card-body' }, m.role)
               ]);
             }))
+          ]),
+
+          h('div', { key: 'contactlabel', className: 'twcp-divider' }, '✦ CONTACT PAGE PREVIEW ✦'),
+
+          h('div', { key: 'contacthero', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, ['contact', 'hero', 'label'])),
+            h('h1', { key: 't', className: 'twcp-h1' }, get(entry, ['contact', 'hero', 'title'])),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, ['contact', 'hero', 'sub']))
+          ]),
+
+          h('div', { key: 'contactinfo', className: 'twcp-section', style: { borderBottom: 'none' } }, [
+            h('div', { key: 'grid', className: 'twcp-grid' }, [
+              h('div', { key: 'email', className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, 'Email us'),
+                h('div', { key: 'd', className: 'twcp-card-body' }, get(entry, ['contact', 'email']))
+              ]),
+              h('div', { key: 'wa', className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, 'WhatsApp'),
+                h('div', { key: 'd', className: 'twcp-card-body' }, [get(entry, ['contact', 'whatsapp_number']), ' · ', get(entry, ['contact', 'whatsapp_hours'])])
+              ]),
+              h('div', { key: 'office', className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, 'Head office'),
+                h('div', { key: 'd', className: 'twcp-card-body' }, get(entry, ['contact', 'office_location']))
+              ]),
+              h('div', { key: 'wholesale', className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, 'Wholesale enquiries'),
+                h('div', { key: 'd', className: 'twcp-card-body' }, get(entry, ['contact', 'wholesale_email']))
+              ])
+            ]),
+            get(entry, ['contact', 'faqs'], []).map(function (f, i) {
+              return h('div', { key: 'faq' + i, className: 'twcp-review', style: { marginTop: i === 0 ? '20px' : '10px' } }, [
+                h('div', { key: 'q', className: 'twcp-card-title' }, f.q),
+                h('div', { key: 'a', className: 'twcp-card-body' }, f.a)
+              ]);
+            })
           ])
         ]);
       }
@@ -249,6 +284,7 @@
                 inStock
                   ? (p.badge ? h('div', { key: 'b', className: 'twcp-badge' }, p.badge) : null)
                   : h('div', { key: 'b', className: 'twcp-badge twcp-oos' }, 'Out of stock'),
+                p.is_bestseller ? h('div', { key: 'bs', style: { fontSize: '9px', color: '#a5844f', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '4px' } }, '\u2605 SHOWN IN HOMEPAGE BESTSELLERS') : null,
                 h('div', { key: 'n', className: 'twcp-pname' }, p.name),
                 h('div', { key: 'm', className: 'twcp-pmat' }, p.material),
                 h('span', { key: 'pr', className: 'twcp-pprice' }, p.price),
@@ -281,6 +317,39 @@
       }
     });
 
+    /* ── Hero slideshow preview ── */
+    var HeroSlidesPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var getAsset = this.props.getAsset;
+        var slides = get(entry, ['slides'], []);
+        return h('div', { className: 'twcp-wrap' }, [
+          h('div', { key: 'lbl', className: 'twcp-divider' }, '✦ HERO SLIDESHOW PREVIEW ✦'),
+          h('div', { key: 'overlay', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, ['eyebrow'])),
+            h('h1', { key: 't', className: 'twcp-h1' }, [
+              get(entry, ['title_line1']), h('br', { key: 'br' }),
+              get(entry, ['title_line2'])
+            ]),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, ['sub'])),
+            h('div', { key: 'c', className: 'twcp-btn twcp-btn-royal', style: { display: 'inline-block' } }, (get(entry, ['cta']) || '') + ' →')
+          ]),
+          h('div', { key: 'grid', className: 'twcp-grid' }, slides.map(function (s, i) {
+            var src = s.src ? (getAsset ? getAsset(s.src).toString() : s.src) : '';
+            return h('div', { key: i, className: 'twcp-pcard' }, [
+              s.type === 'video'
+                ? h('video', { key: 'v', className: 'twcp-img', src: src, autoPlay: true, muted: true, loop: true, playsInline: true })
+                : (src ? h('img', { key: 'img', className: 'twcp-img', src: src }) : h('div', { key: 'img', className: 'twcp-img' })),
+              h('div', { key: 'body', className: 'twcp-pcard-body' }, [
+                h('div', { key: 'l', className: 'twcp-card-body' }, 'Slide ' + (i + 1) + ' \u2014 ' + (s.type || 'image'))
+              ])
+            ]);
+          }))
+        ]);
+      }
+    });
+
+    CMS.registerPreviewTemplate('hero_slides', HeroSlidesPreview);
     CMS.registerPreviewTemplate('content', ContentPreview);
     CMS.registerPreviewTemplate('products', ProductsPreview);
     CMS.registerPreviewTemplate('gallery', GalleryPreview);
