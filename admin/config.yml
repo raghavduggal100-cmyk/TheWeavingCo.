@@ -2,6 +2,11 @@ backend:
   name: git-gateway
   branch: main
 
+# Editorial workflow: saves become Drafts first. Nothing goes live on the
+# actual website until you move an entry to "Ready" and click "Publish now"
+# inside the CMS. Netlify still deploys within about a minute of publishing.
+publish_mode: editorial_workflow
+
 media_folder: "images/products"
 public_folder: "/images/products"
 
@@ -36,8 +41,222 @@ collections:
                   - { label: "Gift sets", value: "gifts" }
                 default: "women"
                 hint: "Controls which shop filter/category this product appears under."
+              - label: "In Stock"
+                name: "in_stock"
+                widget: "boolean"
+                default: true
+                hint: "Turn this off to show 'Out of stock' on the site and disable Add to Cart/Buy Now for this product. Turn back on once restocked."
               - label: "Photos"
                 name: "photos"
                 widget: "list"
                 field: { label: "Photo", name: "photo", widget: "image" }
                 hint: "Upload as many photos as you like. The first photo is used as the cover image on the shop grid."
+
+
+  - name: "gallery"
+    label: "Photo Gallery"
+    files:
+      - file: "content/gallery.json"
+        label: "Homepage Gallery"
+        name: "gallery_photos"
+        fields:
+          - label: "Gallery Photos"
+            name: "images"
+            widget: "list"
+            summary: "{{fields.slot}}"
+            hint: "There are exactly 5 photo slots to keep the mosaic layout looking right \u2014 you can only replace the photo and description in each slot, not add or remove slots."
+            fields:
+              - { label: "Slot (do not edit)", name: "slot", widget: "string" }
+              - { label: "Layout class (do not edit)", name: "css_class", widget: "string", required: false }
+              - { label: "Photo", name: "photo", widget: "image" }
+              - { label: "Alt text (for accessibility)", name: "alt", widget: "string", required: false, hint: "A short description of the photo." }
+
+  - name: "content"
+    label: "Website Text"
+    files:
+      - file: "content/site-content.json"
+        label: "Homepage & About Page Text"
+        name: "site_content"
+        fields:
+          - label: "Home Page"
+            name: "home"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Hero (top banner)"
+                name: "hero"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label above title", name: "eyebrow", widget: "string" }
+                  - { label: "Title \u2014 line 1", name: "title_line1", widget: "string" }
+                  - { label: "Title \u2014 line 2", name: "title_line2", widget: "string", required: false }
+                  - { label: "Subtext", name: "sub", widget: "text" }
+                  - { label: "First button label", name: "cta_primary", widget: "string" }
+                  - { label: "Second button label", name: "cta_secondary", widget: "string" }
+              - { label: "Tagline under the crest logo", name: "brand_tagline", widget: "string" }
+              - label: "Our Story (brief)"
+                name: "story"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "label", widget: "string" }
+                  - { label: "Title \u2014 line 1", name: "title_line1", widget: "string" }
+                  - { label: "Title \u2014 line 2", name: "title_line2", widget: "string", required: false }
+                  - { label: "Paragraph", name: "body", widget: "text" }
+                  - label: "Stats"
+                    name: "stats"
+                    widget: "list"
+                    summary: "{{fields.num}} \u2014 {{fields.label}}"
+                    fields:
+                      - { label: "Number", name: "num", widget: "string" }
+                      - { label: "Label", name: "label", widget: "string" }
+              - label: "Browse by Category"
+                name: "categories"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "text" }
+                  - label: "Category Cards"
+                    name: "cards"
+                    widget: "list"
+                    summary: "{{fields.name}}"
+                    hint: "Keep exactly 4 cards \u2014 Women's, Men's, Stoles, Gifts \u2014 in this order, or the shop filter links will stop matching."
+                    fields:
+                      - { label: "Filter key (do not edit)", name: "filter", widget: "string" }
+                      - { label: "Icon (do not edit)", name: "icon", widget: "string" }
+                      - { label: "Name", name: "name", widget: "string" }
+                      - { label: "Description", name: "desc", widget: "string" }
+              - label: "Bestsellers heading"
+                name: "bestsellers"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "string" }
+              - label: "The Craft (behind every piece)"
+                name: "craft"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "label", widget: "string" }
+                  - { label: "Title \u2014 line 1", name: "title_line1", widget: "string" }
+                  - { label: "Title \u2014 line 2", name: "title_line2", widget: "string", required: false }
+                  - { label: "Paragraph", name: "body", widget: "text" }
+                  - label: "Pills (small tags)"
+                    name: "pills"
+                    widget: "list"
+                    hint: "One tag per line, e.g. Sozni embroidery"
+                  - { label: "Link text (before the arrow)", name: "link_text", widget: "string" }
+              - label: "AI Style Advisor heading"
+                name: "ai_advisor"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "string" }
+              - label: "Reviews (Verified Buyers)"
+                name: "reviews"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "string" }
+                  - label: "Review Cards"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.name}}"
+                    fields:
+                      - { label: "Quote", name: "quote", widget: "text" }
+                      - { label: "Customer name", name: "name", widget: "string" }
+                      - { label: "Location", name: "location", widget: "string" }
+              - label: "The Art of Gifting"
+                name: "gifting"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "text" }
+                  - label: "Occasion pills"
+                    name: "pills"
+                    widget: "list"
+                    summary: "{{fields.label}}"
+                    fields:
+                      - { label: "Icon (do not edit)", name: "icon", widget: "string" }
+                      - { label: "Label", name: "label", widget: "string" }
+              - label: "Photo Gallery heading"
+                name: "gallery_section"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "string" }
+              - label: "Newsletter signup"
+                name: "newsletter"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "eyebrow", widget: "string" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Subtext", name: "sub", widget: "string" }
+                  - { label: "Button label (before the arrow)", name: "cta", widget: "string" }
+                  - { label: "Fine print", name: "note", widget: "string" }
+          - label: "About Page"
+            name: "about"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Hero (top banner)"
+                name: "hero"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Small label", name: "label", widget: "string" }
+                  - { label: "Title \u2014 line 1", name: "title_line1", widget: "string" }
+                  - { label: "Title \u2014 line 2", name: "title_line2", widget: "string", required: false }
+                  - { label: "Subtext", name: "sub", widget: "text" }
+              - label: "How We Began"
+                name: "story"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Section title", name: "title", widget: "string" }
+                  - { label: "Paragraph 1", name: "paragraph1", widget: "text" }
+                  - { label: "Paragraph 2", name: "paragraph2", widget: "text" }
+              - label: "What We Stand For"
+                name: "values"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Section title", name: "title", widget: "string" }
+                  - { label: "Section subtext", name: "sub", widget: "string" }
+                  - label: "Value Cards"
+                    name: "items"
+                    widget: "list"
+                    hint: "Keep exactly 4 cards, or the layout grid will look uneven."
+                    summary: "{{fields.title}}"
+                    fields:
+                      - { label: "Title", name: "title", widget: "string" }
+                      - { label: "Description", name: "body", widget: "text" }
+              - label: "Our Team"
+                name: "team"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Section title", name: "title", widget: "string" }
+                  - { label: "Section subtext", name: "sub", widget: "string" }
+                  - label: "Team Members"
+                    name: "members"
+                    widget: "list"
+                    summary: "{{fields.name}}"
+                    fields:
+                      - { label: "Icon (do not edit)", name: "icon", widget: "string" }
+                      - { label: "Name / Title", name: "name", widget: "string" }
+                      - { label: "Role", name: "role", widget: "string" }

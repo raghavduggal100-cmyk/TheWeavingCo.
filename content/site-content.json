@@ -1,0 +1,119 @@
+{
+  "home": {
+    "hero": {
+      "eyebrow": "EST. 2025 · AMRITSAR, INDIA",
+      "title_line1": "Where centuries of craft",
+      "title_line2": "meet the modern wardrobe",
+      "sub": "Every piece we craft carries the soul of an Amritsari artisan — needle by needle, thread by thread. Pure pashmina, cashmere, fine stoles & scarves. Honest luxury. Delivered to your door.",
+      "cta_primary": "Explore the collection",
+      "cta_secondary": "Our story"
+    },
+    "brand_tagline": "CRAFTED AT SOURCE. WOVEN FOR THE WORLD.",
+    "story": {
+      "label": "OUR STORY IN BRIEF",
+      "title_line1": "Not just a shawl.",
+      "title_line2": "A living piece of history.",
+      "body": "The Weaving Co. was born from one conviction — that the finest textiles in the world belong in your wardrobe, not behind glass in a museum. We work directly with artisan families in Amritsar, paying fair wages, preserving dying crafts, and bringing you shawls, stoles, scarves, cashmere & pashminas that carry centuries of tradition in every thread.",
+      "stats": [
+        { "num": "300+", "label": "Years of craft tradition behind every piece" },
+        { "num": "50+", "label": "Artisan families directly partnered" },
+        { "num": "10K+", "label": "Happy customers across India" }
+      ]
+    },
+    "categories": {
+      "eyebrow": "BROWSE BY CATEGORY",
+      "heading": "Find your perfect piece",
+      "sub": "From everyday scarves to bridal pashminas — shawls, stoles, cashmere & more for every woman and every moment.",
+      "cards": [
+        { "filter": "women", "icon": "ti-gender-female", "name": "Women's shawls", "desc": "240+ styles — pure pashmina, Merino wool & Sozni embroidery" },
+        { "filter": "men", "icon": "ti-gender-male", "name": "Men's shawls", "desc": "120+ styles — Lohis, Kaani weaves & Merino stoles" },
+        { "filter": "stoles", "icon": "ti-scarf", "name": "Stoles & scarves", "desc": "Bamboo silk, fine wool & Aari embroidery — everyday to festive" },
+        { "filter": "gifts", "icon": "ti-gift", "name": "Gift sets", "desc": "Curated boxes for weddings, Diwali & corporate gifting" }
+      ]
+    },
+    "bestsellers": {
+      "eyebrow": "BESTSELLERS",
+      "heading": "Most loved this season",
+      "sub": "The pieces our customers keep coming back for"
+    },
+    "craft": {
+      "label": "THE CRAFT BEHIND EVERY PIECE",
+      "title_line1": "Each shawl takes up to",
+      "title_line2": "3 weeks to make by hand",
+      "body": "Our artisans in Amritsar use needles no thicker than a hair to weave and embroider patterns passed down for generations. Every shawl, stole, scarf, cashmere and pashmina we sell is a living expression of their craft — spoken in silk, wool and thread.",
+      "pills": ["Sozni embroidery", "Kani weave", "Aari needlework", "Pure pashmina", "GI tagged", "Woolmark certified"],
+      "link_text": "Meet our artisans"
+    },
+    "ai_advisor": {
+      "eyebrow": "AI STYLE ADVISOR",
+      "heading": "Not sure where to start?",
+      "sub": "Tell us your occasion, style, or recipient and we'll find your perfect piece instantly."
+    },
+    "reviews": {
+      "eyebrow": "VERIFIED BUYERS",
+      "heading": "Loved across India",
+      "sub": "Real reviews from real people",
+      "items": [
+        { "quote": "The Sozni shawl I ordered was breathtaking. The embroidery is so intricate it looks painted. My mother cried when I gifted it to her.", "name": "Priya M.", "location": "Mumbai · Verified buyer" },
+        { "quote": "Packaging alone felt like a luxury unboxing. The wooden box, the certificate of authenticity, the hand-written note — absolutely stunning.", "name": "Arjun S.", "location": "Delhi · Verified buyer" }
+      ]
+    },
+    "gifting": {
+      "eyebrow": "THE ART OF GIFTING",
+      "heading": "No size. No fit. Pure luxury.",
+      "sub": "Shawls make the most thoughtful gifts — free gift wrap and personalised notes on every order.",
+      "pills": [
+        { "icon": "ti-sparkles", "label": "Diwali gifts" },
+        { "icon": "ti-rings", "label": "Wedding gifts" },
+        { "icon": "ti-cake", "label": "Birthdays" },
+        { "icon": "ti-briefcase", "label": "Corporate" },
+        { "icon": "ti-heart", "label": "Anniversary" },
+        { "icon": "ti-star", "label": "Just because" }
+      ]
+    },
+    "gallery_section": {
+      "eyebrow": "THE SIGNATURE WEAVE",
+      "heading": "Every thread tells a story of Amritsar",
+      "sub": "Heirloom jamawars, draped like royalty — and every order arrives in our signature keepsake box."
+    },
+    "newsletter": {
+      "eyebrow": "STAY CONNECTED",
+      "heading": "Get 10% off your first order",
+      "sub": "New arrivals, craft stories & exclusive offers. No spam — ever.",
+      "cta": "Get 10% off",
+      "note": "By subscribing you agree to our privacy policy. Unsubscribe anytime."
+    }
+  },
+  "about": {
+    "hero": {
+      "label": "Our story",
+      "title_line1": "Born in Amritsar.",
+      "title_line2": "Made for the world.",
+      "sub": "We didn't start a business. We started a mission — to keep a 300-year-old craft alive, fairly and beautifully."
+    },
+    "story": {
+      "title": "How The Weaving Co. began",
+      "paragraph1": "It started on a winter trip to Srinagar. Walking through the old city, I stumbled into a workshop where an old craftsman sat at a loom, his fingers moving with the quiet confidence of someone who had done this ten thousand times. He was making a Kani shawl — a process that takes three months. He told me he earned less per shawl than most people spend on a meal.",
+      "paragraph2": "I came home and couldn't stop thinking about it. There had to be a way to connect people who appreciate genuine craft with the people who create it. The Weaving Co. is that bridge — a direct line from the looms of Amritsar to your wardrobe, with nothing in between except honesty."
+    },
+    "values": {
+      "title": "What we stand for",
+      "sub": "Four principles that guide every decision we make",
+      "items": [
+        { "title": "Radical authenticity", "body": "Every claim we make is verifiable. GI tags, Woolmark certification, artisan names on certificates — no vague \"handcrafted\" without proof." },
+        { "title": "Fair trade, always", "body": "Our artisans earn 3× the regional average. We publish our pricing model. We believe transparency is the highest form of respect." },
+        { "title": "Craft preservation", "body": "We fund apprenticeships for young Amritsari craftspeople. Dying techniques like Sozni embroidery and fine pashmina weaving deserve a future, not just a history." },
+        { "title": "Zero compromise on quality", "body": "If a shawl doesn't meet our standards, it doesn't ship. We'd rather have fewer products than ones we're not proud of." }
+      ]
+    },
+    "team": {
+      "title": "Our team",
+      "sub": "Small team, enormous passion",
+      "members": [
+        { "icon": "ti-user", "name": "Founder", "role": "Vision & partnerships" },
+        { "icon": "ti-palette", "name": "Lead designer", "role": "Collections & curation" },
+        { "icon": "ti-heart", "name": "Customer care", "role": "Your happiness" }
+      ]
+    }
+  }
+}

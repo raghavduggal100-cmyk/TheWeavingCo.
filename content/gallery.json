@@ -1,0 +1,9 @@
+{
+  "images": [
+    { "slot": "model",   "css_class": "wg-model", "photo": "/images/gallery/gallery-model.jpg",   "alt": "Model draped in a Kani weave shawl" },
+    { "slot": "wide",    "css_class": "wg-wide",  "photo": "/images/gallery/gallery-wide.jpg",    "alt": "Close-up of hand embroidery detail" },
+    { "slot": "square1", "css_class": "",         "photo": "/images/gallery/gallery-square1.jpg", "alt": "Artisan at the loom in Amritsar" },
+    { "slot": "square2", "css_class": "",         "photo": "/images/gallery/gallery-square2.jpg", "alt": "Folded pashmina shawls in keepsake box" },
+    { "slot": "full",    "css_class": "wg-full",  "photo": "/images/gallery/gallery-full.jpg",    "alt": "Wide shot of the weaving workshop" }
+  ]
+}

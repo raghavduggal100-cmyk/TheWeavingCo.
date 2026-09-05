@@ -28,16 +28,22 @@ async function twcLoadProducts() {
 /* ── Product cards (home + shop grids) ── */
 function twcBuildPcardHtml(p) {
   var cover = p.photos && p.photos.length ? p.photos[0] : '';
+  var inStock = p.in_stock !== false;
   var img = cover
-    ? '<img src="' + cover + '" alt="' + twcAttrEscape(p.name) + '" style="width:100%;height:100%;object-fit:cover;object-position:center top;">'
+    ? '<img src="' + cover + '" alt="' + twcAttrEscape(p.name) + '" style="width:100%;height:100%;object-fit:cover;object-position:center top;' + (inStock ? '' : 'filter:grayscale(0.6);opacity:0.75;') + '">'
     : '<i class="ti ti-photo" aria-hidden="true"></i>';
-  var badge = p.badge ? '<div class="pbadge">' + p.badge + '</div>' : '';
+  var badge = !inStock
+    ? '<div class="pbadge pbadge-oos">Out of stock</div>'
+    : (p.badge ? '<div class="pbadge">' + p.badge + '</div>' : '');
   var was = p.was_price ? '<span class="pwas">' + p.was_price + '</span>' : '';
+  var cartBtn = inStock
+    ? '<button type="button" class="twc-card-addcart" onclick="event.stopPropagation();twcAddToCartBySlug(\'' + p.slug + '\')">Add to Cart</button>'
+    : '<button type="button" class="twc-card-addcart" disabled>Out of Stock</button>';
   return '<div class="pcard" onclick="twcOpenProductPage(\'' + p.slug + '\')">\n'
     + '  <div class="pcard-img" style="position:relative;">' + img + badge + '</div>\n'
     + '  <div class="pcard-info"><div class="pcard-name">' + p.name + '</div><div class="pcard-mat">' + (p.material || '') + '</div>'
     + '<div class="pcard-price"><span class="pnow">' + p.price + '</span>' + was + '</div>'
-    + '<button type="button" class="twc-card-addcart" onclick="event.stopPropagation();twcAddToCartBySlug(\'' + p.slug + '\')">Add to Cart</button>'
+    + cartBtn
     + '</div>\n</div>';
 }
 
@@ -62,7 +68,7 @@ function twcProductsForFilter(key) {
 function twcRenderProductGrids() {
   var home = document.querySelector('.prod-grid');
   var shop = document.querySelector('.shop-grid');
-  if (home) home.innerHTML = TWC_PRODUCTS.slice(0, 6).map(twcBuildPcardHtml).join('\n');
+  if (home) home.innerHTML = TWC_PRODUCTS.slice(0, 12).map(twcBuildPcardHtml).join('\n');
   if (shop) {
     var list = twcProductsForFilter(TWC_SHOP_FILTER);
     shop.innerHTML = list.length
@@ -207,7 +213,7 @@ function twcAddToCart(slug, name, price, img, qty) {
 }
 function twcAddToCartBySlug(slug) {
   var p = twcFindProduct(slug);
-  if (!p) return;
+  if (!p || p.in_stock === false) return;
   var priceNum = parseInt((p.price || '').replace(/[^\d]/g, ''), 10) || 0;
   var img = (p.photos && p.photos[0]) || TWC_PLACEHOLDER_IMG;
   twcAddToCart(slug, p.name, priceNum, img, 1);
@@ -296,13 +302,22 @@ function twcOpenProductPage(slug) {
   if (!p) { console.error('Product not found for slug:', slug); return; }
   var priceNum = parseInt((p.price || '').replace(/[^\d]/g, ''), 10) || 0;
   var gal = (p.photos && p.photos.length) ? p.photos.slice() : [TWC_PLACEHOLDER_IMG];
-  twcPModalData = { slug: slug, name: p.name, price: priceNum, img: gal[0] };
+  var inStock = p.in_stock !== false;
+  twcPModalData = { slug: slug, name: p.name, price: priceNum, img: gal[0], inStock: inStock };
+  twcTrackViewItem(p, priceNum);
   twcPModalImgs = gal;
   twcPModalIdx = 0;
 
   var b = document.getElementById('twcPPBadge');
-  b.style.display = p.badge ? 'inline-block' : 'none';
-  b.textContent = p.badge || '';
+  if (!inStock) {
+    b.style.display = 'inline-block';
+    b.textContent = 'Out of stock';
+    b.classList.add('pbadge-oos');
+  } else {
+    b.style.display = p.badge ? 'inline-block' : 'none';
+    b.textContent = p.badge || '';
+    b.classList.remove('pbadge-oos');
+  }
   document.getElementById('twcPPName').textContent = p.name;
   document.getElementById('twcPPCrumbName').textContent = p.name;
   document.getElementById('twcPPMat').textContent = p.material || '';
@@ -311,6 +326,18 @@ function twcOpenProductPage(slug) {
   w.textContent = p.was_price || '';
   w.style.display = p.was_price ? 'inline' : 'none';
   document.getElementById('twcPPQty').textContent = '1';
+
+  var statusWrap = document.getElementById('twcPPStatus');
+  if (statusWrap) {
+    statusWrap.innerHTML = inStock
+      ? '<div class="twc-pp-status-item"><span class="twc-pp-status-dot"></span> In stock, ready to ship</div><div class="twc-pp-status-item">&#128230; Free shipping across India &middot; 4&ndash;7 business days</div>'
+      : '<div class="twc-pp-status-item"><span class="twc-pp-status-dot oos"></span> Currently out of stock</div><div class="twc-pp-status-item">Check back soon, or contact us to be notified when restocked.</div>';
+  }
+  var addBtn = document.querySelector('.twc-pp-addcart');
+  var buyBtn = document.querySelector('.twc-pp-buynow');
+  if (addBtn) { addBtn.disabled = !inStock; addBtn.textContent = inStock ? 'Add to Cart' : 'Out of Stock'; }
+  if (buyBtn) { buyBtn.disabled = !inStock; buyBtn.textContent = inStock ? 'Buy Now' : 'Out of Stock'; }
+
   twcShowPModalImg();
   twcRenderAccordion();
   twcGo2('product');
@@ -345,13 +372,13 @@ function twcQtyStep(delta) {
   el.textContent = v;
 }
 function twcAddToCartFromPage() {
-  if (!twcPModalData) return;
+  if (!twcPModalData || twcPModalData.inStock === false) return;
   var qty = parseInt(document.getElementById('twcPPQty').textContent, 10) || 1;
   twcAddToCart(twcPModalData.slug, twcPModalData.name, twcPModalData.price, twcPModalData.img, qty);
   twcCartPanel(true);
 }
 function twcBuyNowFromPage() {
-  if (!twcPModalData) return;
+  if (!twcPModalData || twcPModalData.inStock === false) return;
   var qty = parseInt(document.getElementById('twcPPQty').textContent, 10) || 1;
   twcAddToCart(twcPModalData.slug, twcPModalData.name, twcPModalData.price, twcPModalData.img, qty);
   twcGoToCheckout();
@@ -375,6 +402,7 @@ function twcGo2(id) {
   document.querySelectorAll('.page-btn').forEach(function (b) { b.classList.remove('active'); b.removeAttribute('aria-current'); });
   var page = document.getElementById('page-' + id);
   if (page) { page.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  twcTrackPageView(id, id);
 }
 
 /* ── AI Style Advisor: wire its recommendation rules up to the loaded products ── */
@@ -384,7 +412,254 @@ function twcWireAiAdvisorProducts() {
   }
 }
 
+/* ── Homepage photo gallery (CMS-managed via content/gallery.json) ── */
+function twcBuildGalleryImgHtml(item) {
+  var cls = item.css_class || '';
+  var src = item.photo || TWC_PLACEHOLDER_IMG;
+  var alt = twcAttrEscape(item.alt || '');
+  return '<div' + (cls ? ' class="' + cls + '"' : '') + '><img src="' + src + '" alt="' + alt + '" loading="lazy"></div>';
+}
+async function twcLoadGallery() {
+  var grid = document.getElementById('twcGalleryGrid');
+  if (!grid) return;
+  try {
+    var res = await fetch('/content/gallery.json', { cache: 'no-store' });
+    var data = await res.json();
+    var images = (data && data.images) || [];
+    grid.innerHTML = images.map(twcBuildGalleryImgHtml).join('\n');
+  } catch (e) {
+    console.error('Could not load gallery.json', e);
+  }
+}
+
+/* ── Homepage / About page editable text (CMS-managed via content/site-content.json) ── */
+function twcSetText(id, text) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+function twcSetLines(id, line1, line2) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var l1 = twcAttrEscape(line1 || '');
+  var l2 = twcAttrEscape(line2 || '');
+  el.innerHTML = l2 ? (l1 + '<br>' + l2) : l1;
+}
+function twcBuildCatCardHtml(card) {
+  return '<div class="cat-card" onclick="twcGoShopFiltered(\'' + (card.filter || '') + '\')" role="button" tabindex="0" aria-label="Shop ' + twcAttrEscape(card.name || '') + '">'
+    + '<div class="cat-icon-wrap"><i class="ti ' + (card.icon || 'ti-tag').replace(/^ti-ti-/, 'ti-') + '" aria-hidden="true"></i></div>'
+    + '<div class="cat-info"><div class="cat-name">' + twcAttrEscape(card.name || '') + '</div><div class="cat-desc">' + twcAttrEscape(card.desc || '') + '</div></div>'
+    + '</div>';
+}
+function twcBuildStatCardHtml(s) {
+  return '<div class="stat-card"><div class="stat-num">' + twcAttrEscape(s.num || '') + '</div><div class="stat-label">' + twcAttrEscape(s.label || '') + '</div></div>';
+}
+function twcBuildPillHtml(text) {
+  return '<span class="cpill">' + twcAttrEscape(text) + '</span>';
+}
+function twcBuildGiftPillHtml(p) {
+  return '<div class="gift-pill"><i class="ti ' + (p.icon || 'ti-star') + '" aria-hidden="true"></i>' + twcAttrEscape(p.label || '') + '</div>';
+}
+function twcBuildReviewCardHtml(r) {
+  var stars = new Array(5).fill('<i class="ti ti-star" aria-hidden="true"></i>').join('');
+  return '<div class="rcard"><div class="rcard-stars">' + stars + '</div>'
+    + '<div class="rcard-text">"' + twcAttrEscape(r.quote || '') + '"</div>'
+    + '<div class="rcard-author">' + twcAttrEscape(r.name || '') + '</div>'
+    + '<div class="rcard-loc">' + twcAttrEscape(r.location || '') + '</div></div>';
+}
+function twcBuildValueCardHtml(v) {
+  return '<div class="value-card"><div class="value-title">' + twcAttrEscape(v.title || '') + '</div><div class="value-body">' + twcAttrEscape(v.body || '') + '</div></div>';
+}
+function twcBuildTeamCardHtml(m) {
+  return '<div class="team-card"><div class="team-avatar"><i class="ti ' + (m.icon || 'ti-user') + '" aria-hidden="true"></i></div><div class="team-name">' + twcAttrEscape(m.name || '') + '</div><div class="team-role">' + twcAttrEscape(m.role || '') + '</div></div>';
+}
+
+async function twcLoadSiteContent() {
+  var data;
+  try {
+    var res = await fetch('/content/site-content.json', { cache: 'no-store' });
+    data = await res.json();
+  } catch (e) {
+    console.error('Could not load site-content.json', e);
+    return;
+  }
+  var home = (data && data.home) || {};
+  var about = (data && data.about) || {};
+
+  if (home.hero) {
+    twcSetText('tc-hero-eyebrow', home.hero.eyebrow);
+    twcSetLines('tc-hero-title', home.hero.title_line1, home.hero.title_line2);
+    twcSetText('tc-hero-sub', home.hero.sub);
+    var c1 = document.getElementById('tc-hero-cta1'); if (c1 && home.hero.cta_primary) c1.textContent = home.hero.cta_primary + ' →';
+    var c2 = document.getElementById('tc-hero-cta2'); if (c2 && home.hero.cta_secondary) c2.textContent = home.hero.cta_secondary + ' →';
+  }
+  twcSetText('tc-brand-tagline', home.brand_tagline);
+
+  if (home.story) {
+    twcSetText('tc-story-label', home.story.label);
+    twcSetLines('tc-story-title', home.story.title_line1, home.story.title_line2);
+    twcSetText('tc-story-body', home.story.body);
+    var statsEl = document.getElementById('tc-story-stats');
+    if (statsEl && home.story.stats) statsEl.innerHTML = home.story.stats.map(twcBuildStatCardHtml).join('');
+  }
+
+  if (home.categories) {
+    twcSetText('tc-cat-eyebrow', home.categories.eyebrow);
+    twcSetText('tc-cat-heading', home.categories.heading);
+    twcSetText('tc-cat-sub', home.categories.sub);
+    var catGrid = document.getElementById('tc-cat-grid');
+    if (catGrid && home.categories.cards) catGrid.innerHTML = home.categories.cards.map(twcBuildCatCardHtml).join('');
+  }
+
+  if (home.bestsellers) {
+    twcSetText('tc-prod-eyebrow', home.bestsellers.eyebrow);
+    twcSetText('tc-prod-heading', home.bestsellers.heading);
+    twcSetText('tc-prod-sub', home.bestsellers.sub);
+  }
+
+  if (home.craft) {
+    twcSetText('tc-craft-label', home.craft.label);
+    twcSetLines('tc-craft-title', home.craft.title_line1, home.craft.title_line2);
+    twcSetText('tc-craft-body', home.craft.body);
+    var pillsEl = document.getElementById('tc-craft-pills');
+    if (pillsEl && home.craft.pills) pillsEl.innerHTML = home.craft.pills.map(twcBuildPillHtml).join('');
+    var linkEl = document.getElementById('tc-craft-link'); if (linkEl && home.craft.link_text) linkEl.textContent = home.craft.link_text + ' →';
+  }
+
+  if (home.ai_advisor) {
+    twcSetText('tc-ai-eyebrow', home.ai_advisor.eyebrow);
+    twcSetText('tc-ai-heading', home.ai_advisor.heading);
+    twcSetText('tc-ai-sub', home.ai_advisor.sub);
+  }
+
+  if (home.reviews) {
+    twcSetText('tc-reviews-eyebrow', home.reviews.eyebrow);
+    twcSetText('tc-reviews-heading', home.reviews.heading);
+    twcSetText('tc-reviews-sub', home.reviews.sub);
+    var revGrid = document.getElementById('tc-reviews-grid');
+    if (revGrid && home.reviews.items) revGrid.innerHTML = home.reviews.items.map(twcBuildReviewCardHtml).join('');
+  }
+
+  if (home.gifting) {
+    twcSetText('tc-gift-eyebrow', home.gifting.eyebrow);
+    twcSetText('tc-gift-heading', home.gifting.heading);
+    twcSetText('tc-gift-sub', home.gifting.sub);
+    var giftGrid = document.getElementById('tc-gift-grid');
+    if (giftGrid && home.gifting.pills) giftGrid.innerHTML = home.gifting.pills.map(twcBuildGiftPillHtml).join('');
+  }
+
+  if (home.gallery_section) {
+    twcSetText('tc-gallery-eyebrow', home.gallery_section.eyebrow);
+    twcSetText('tc-gallery-heading', home.gallery_section.heading);
+    twcSetText('tc-gallery-sub', home.gallery_section.sub);
+  }
+
+  if (home.newsletter) {
+    twcSetText('tc-nl-eyebrow', home.newsletter.eyebrow);
+    twcSetText('tc-nl-heading', home.newsletter.heading);
+    twcSetText('tc-nl-sub', home.newsletter.sub);
+    var nlBtn = document.getElementById('tc-nl-cta'); if (nlBtn && home.newsletter.cta) nlBtn.textContent = home.newsletter.cta + ' →';
+    twcSetText('tc-nl-note', home.newsletter.note);
+  }
+
+  if (about.hero) {
+    twcSetText('tc-about-hero-label', about.hero.label);
+    twcSetLines('tc-about-hero-title', about.hero.title_line1, about.hero.title_line2);
+    twcSetText('tc-about-hero-sub', about.hero.sub);
+  }
+  if (about.story) {
+    twcSetText('tc-about-story-title', about.story.title);
+    twcSetText('tc-about-story-p1', about.story.paragraph1);
+    twcSetText('tc-about-story-p2', about.story.paragraph2);
+  }
+  if (about.values) {
+    twcSetText('tc-about-values-title', about.values.title);
+    twcSetText('tc-about-values-sub', about.values.sub);
+    var valGrid = document.getElementById('tc-about-values-grid');
+    if (valGrid && about.values.items) valGrid.innerHTML = about.values.items.map(twcBuildValueCardHtml).join('');
+  }
+  if (about.team) {
+    twcSetText('tc-about-team-title', about.team.title);
+    twcSetText('tc-about-team-sub', about.team.sub);
+    var teamGrid = document.getElementById('tc-about-team-grid');
+    if (teamGrid && about.team.members) teamGrid.innerHTML = about.team.members.map(twcBuildTeamCardHtml).join('');
+  }
+}
+
+/* ── Analytics (Google Analytics 4) + cookie consent ──
+   HOW TO TURN THIS ON:
+   1. Create a free Google Analytics 4 property at analytics.google.com and copy your
+      Measurement ID (looks like "G-XXXXXXXX").
+   2. Paste it into TWC_ANALYTICS_CONFIG.measurementId below and set enabled: true.
+   That's it — the cookie banner and tracking below will start working automatically.
+   Nothing is loaded or tracked until this is turned on and a visitor accepts cookies. */
+var TWC_ANALYTICS_CONFIG = { enabled: false, measurementId: '' };
+var TWC_COOKIE_CONSENT_KEY = 'twc_cookie_consent';
+
+function twcAnalyticsReady() {
+  return TWC_ANALYTICS_CONFIG.enabled && !!TWC_ANALYTICS_CONFIG.measurementId && typeof window.gtag === 'function';
+}
+
+function twcInitAnalytics() {
+  if (!TWC_ANALYTICS_CONFIG.enabled || !TWC_ANALYTICS_CONFIG.measurementId) return;
+  if (document.getElementById('twc-ga4-script')) return; // already loaded
+  var s = document.createElement('script');
+  s.id = 'twc-ga4-script';
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(TWC_ANALYTICS_CONFIG.measurementId);
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  // anonymize_ip keeps only approximate (city/region) location, never a precise address
+  window.gtag('config', TWC_ANALYTICS_CONFIG.measurementId, { anonymize_ip: true });
+}
+
+function twcShowCookieBanner() {
+  var b = document.getElementById('twc-cookie-banner');
+  if (b) b.classList.add('open');
+}
+function twcHideCookieBanner() {
+  var b = document.getElementById('twc-cookie-banner');
+  if (b) b.classList.remove('open');
+}
+function twcCookieConsent(accepted) {
+  twcSafeStorageSet(TWC_COOKIE_CONSENT_KEY, accepted ? 'accepted' : 'declined');
+  twcHideCookieBanner();
+  if (accepted) twcInitAnalytics();
+}
+function twcInitCookieConsent() {
+  if (!TWC_ANALYTICS_CONFIG.enabled || !TWC_ANALYTICS_CONFIG.measurementId) return; // nothing to ask consent for yet
+  var choice = twcSafeStorageGet(TWC_COOKIE_CONSENT_KEY);
+  if (choice === 'accepted') { twcInitAnalytics(); return; }
+  if (choice === 'declined') return;
+  twcShowCookieBanner();
+}
+
+/* Fires a virtual pageview whenever a visitor switches between site sections (Shop, About,
+   product pages, etc.) — the site is a single HTML page, so without this GA would only ever
+   see one pageview no matter how much someone browses. */
+function twcTrackPageView(pagePath, pageTitle) {
+  if (!twcAnalyticsReady()) return;
+  window.gtag('event', 'page_view', {
+    page_path: '/' + (pagePath || ''),
+    page_title: pageTitle || document.title
+  });
+}
+/* Fires when a visitor opens a product's detail page, so Bestsellers/traffic reports show
+   which specific products people are actually looking at. */
+function twcTrackViewItem(product, priceNum) {
+  if (!twcAnalyticsReady()) return;
+  window.gtag('event', 'view_item', {
+    currency: 'INR',
+    value: priceNum || 0,
+    items: [{ item_id: product.slug, item_name: product.name, item_category: product.category || '', price: priceNum || 0 }]
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   twcLoadCart();
   twcLoadProducts();
+  twcLoadGallery();
+  twcLoadSiteContent();
+  twcInitCookieConsent();
 });

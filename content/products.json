@@ -13,7 +13,8 @@
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-3.jpg",
         "/images/products/ivory-bloom-jamawar-stoll-multicolour-fl-4.jpg"
       ],
-      "category": "stoles"
+      "category": "stoles",
+      "in_stock": true
     },
     {
       "slug": "kani-weave-shawl-burgundy",
@@ -23,7 +24,8 @@
       "was_price": "₹10,499",
       "badge": "New",
       "photos": [],
-      "category": "women"
+      "category": "women",
+      "in_stock": true
     },
     {
       "slug": "bamboo-silk-stole-ivory-and-gold",
@@ -33,7 +35,8 @@
       "was_price": "₹3,699",
       "badge": "40% off",
       "photos": [],
-      "category": "stoles"
+      "category": "stoles",
+      "in_stock": true
     },
     {
       "slug": "kaani-mens-lohi-black",
@@ -43,7 +46,8 @@
       "was_price": "₹10,499",
       "badge": "Bestseller",
       "photos": [],
-      "category": "men"
+      "category": "men",
+      "in_stock": true
     },
     {
       "slug": "aari-embroidery-stole-navy",
@@ -53,7 +57,8 @@
       "was_price": "₹7,500",
       "badge": "Staff pick",
       "photos": [],
-      "category": "stoles"
+      "category": "stoles",
+      "in_stock": true
     },
     {
       "slug": "heritage-pashmina-gift-box",
@@ -63,7 +68,8 @@
       "was_price": "₹14,999",
       "badge": "Gift fav.",
       "photos": [],
-      "category": "gifts"
+      "category": "gifts",
+      "in_stock": true
     }
   ]
 }
