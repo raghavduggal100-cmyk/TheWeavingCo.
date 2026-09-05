@@ -1,14 +1,61 @@
 {
   "home": {
-    "hero": {
-      "eyebrow": "EST. 2025 · AMRITSAR, INDIA",
-      "title_line1": "Where centuries of craft",
-      "title_line2": "meet the modern wardrobe",
-      "sub": "Every piece we craft carries the soul of an Amritsari artisan — needle by needle, thread by thread. Pure pashmina, cashmere, fine stoles & scarves. Honest luxury. Delivered to your door.",
-      "cta_primary": "Explore the collection",
-      "cta_secondary": "Our story"
+    "craft": {
+      "label": "THE CRAFT BEHIND EVERY PIECE",
+      "title_line1": "Each shawl takes up to",
+      "title_line2": "3 weeks to make by hand",
+      "body": "Our artisans in Amritsar use needles no thicker than a hair to weave and embroider patterns passed down for generations. Every shawl, stole, scarf, cashmere and pashmina we sell is a living expression of their craft — spoken in silk, wool and thread.",
+      "pills": [
+        "Sozni embroidery",
+        "Kani weave",
+        "Aari needlework",
+        "Pure pashmina",
+        "GI tagged",
+        "Woolmark certified"
+      ],
+      "link_text": "Meet our artisans"
     },
-    "brand_tagline": "CRAFTED AT SOURCE. WOVEN FOR THE WORLD.",
+    "ai_advisor": {
+      "eyebrow": "AI STYLE ADVISOR",
+      "heading": "Not sure where to start?",
+      "sub": "Tell us your occasion, style, or recipient and we'll find your perfect piece instantly."
+    },
+    "bestsellers": {
+      "eyebrow": "BESTSELLERS",
+      "heading": "Most loved this season",
+      "sub": "The pieces our customers keep coming back for"
+    },
+    "gifting": {
+      "eyebrow": "THE ART OF GIFTING",
+      "heading": "No size. No fit. Pure luxury.",
+      "sub": "Shawls make the most thoughtful gifts — free gift wrap and personalised notes on every order.",
+      "pills": [
+        {
+          "icon": "ti-sparkles",
+          "label": "Diwali gifts"
+        },
+        {
+          "icon": "ti-rings",
+          "label": "Wedding gifts"
+        },
+        {
+          "icon": "ti-cake",
+          "label": "Birthdays"
+        },
+        {
+          "icon": "ti-briefcase",
+          "label": "Corporate"
+        },
+        {
+          "icon": "ti-heart",
+          "label": "Anniversary"
+        },
+        {
+          "icon": "ti-star",
+          "label": "Just because"
+        }
+      ]
+    },
     "story": {
       "label": "OUR STORY IN BRIEF",
       "title_line1": "Not just a shawl.",
@@ -26,6 +73,44 @@
         {
           "num": "10K+",
           "label": "Happy customers across India"
+        }
+      ]
+    },
+    "brand_tagline": "CRAFTED AT SOURCE. WOVEN FOR THE WORLD.",
+    "gallery_section": {
+      "eyebrow": "THE SIGNATURE WEAVE",
+      "heading": "Every thread tells a story of Amritsar",
+      "sub": "Heirloom jamawars, draped like royalty — and every order arrives in our signature keepsake box."
+    },
+    "newsletter": {
+      "eyebrow": "STAY CONNECTED",
+      "heading": "Get 10% off your first order",
+      "sub": "New arrivals, craft stories & exclusive offers. No spam — ever.",
+      "cta": "Get 10% off",
+      "note": "By subscribing you agree to our privacy policy. Unsubscribe anytime."
+    },
+    "hero": {
+      "eyebrow": "EST. 2025 · AMRITSAR, INDIA",
+      "title_line1": "Where centuries of craft",
+      "title_line2": "meet the modern wardrobe",
+      "sub": "Every piece we craft carries the soul of an Amritsari artisan — needle by needle, thread by thread. Pure pashmina, cashmere, fine stoles & scarves. Honest luxury. Delivered to your door.",
+      "cta_primary": "Explore the collection",
+      "cta_secondary": "Our story"
+    },
+    "reviews": {
+      "eyebrow": "VERIFIED BUYERS",
+      "heading": "Loved across India",
+      "sub": "Real reviews from real people",
+      "items": [
+        {
+          "quote": "The Sozni shawl I ordered was breathtaking. The embroidery is so intricate it looks painted. My mother cried when I gifted it to her.",
+          "name": "Priya M.",
+          "location": "Mumbai · Verified buyer"
+        },
+        {
+          "quote": "Packaging alone felt like a luxury unboxing. The wooden box, the certificate of authenticity, the hand-written note — absolutely stunning.",
+          "name": "Arjun S.",
+          "location": "Delhi · Verified buyer"
         }
       ]
     },
@@ -59,91 +144,6 @@
           "desc": "Curated boxes for weddings, Diwali & corporate gifting"
         }
       ]
-    },
-    "bestsellers": {
-      "eyebrow": "BESTSELLERS",
-      "heading": "Most loved this season",
-      "sub": "The pieces our customers keep coming back for"
-    },
-    "craft": {
-      "label": "THE CRAFT BEHIND EVERY PIECE",
-      "title_line1": "Each shawl takes up to",
-      "title_line2": "3 weeks to make by hand",
-      "body": "Our artisans in Amritsar use needles no thicker than a hair to weave and embroider patterns passed down for generations. Every shawl, stole, scarf, cashmere and pashmina we sell is a living expression of their craft — spoken in silk, wool and thread.",
-      "pills": [
-        "Sozni embroidery",
-        "Kani weave",
-        "Aari needlework",
-        "Pure pashmina",
-        "GI tagged",
-        "Woolmark certified"
-      ],
-      "link_text": "Meet our artisans"
-    },
-    "ai_advisor": {
-      "eyebrow": "AI STYLE ADVISOR",
-      "heading": "Not sure where to start?",
-      "sub": "Tell us your occasion, style, or recipient and we'll find your perfect piece instantly."
-    },
-    "reviews": {
-      "eyebrow": "VERIFIED BUYERS",
-      "heading": "Loved across India",
-      "sub": "Real reviews from real people",
-      "items": [
-        {
-          "quote": "The Sozni shawl I ordered was breathtaking. The embroidery is so intricate it looks painted. My mother cried when I gifted it to her.",
-          "name": "Priya M.",
-          "location": "Mumbai · Verified buyer"
-        },
-        {
-          "quote": "Packaging alone felt like a luxury unboxing. The wooden box, the certificate of authenticity, the hand-written note — absolutely stunning.",
-          "name": "Arjun S.",
-          "location": "Delhi · Verified buyer"
-        }
-      ]
-    },
-    "gifting": {
-      "eyebrow": "THE ART OF GIFTING",
-      "heading": "No size. No fit. Pure luxury.",
-      "sub": "Shawls make the most thoughtful gifts — free gift wrap and personalised notes on every order.",
-      "pills": [
-        {
-          "icon": "ti-sparkles",
-          "label": "Diwali gifts"
-        },
-        {
-          "icon": "ti-rings",
-          "label": "Wedding gifts"
-        },
-        {
-          "icon": "ti-cake",
-          "label": "Birthdays"
-        },
-        {
-          "icon": "ti-briefcase",
-          "label": "Corporate"
-        },
-        {
-          "icon": "ti-heart",
-          "label": "Anniversary"
-        },
-        {
-          "icon": "ti-star",
-          "label": "Just because"
-        }
-      ]
-    },
-    "gallery_section": {
-      "eyebrow": "THE SIGNATURE WEAVE",
-      "heading": "Every thread tells a story of Amritsar",
-      "sub": "Heirloom jamawars, draped like royalty — and every order arrives in our signature keepsake box."
-    },
-    "newsletter": {
-      "eyebrow": "STAY CONNECTED",
-      "heading": "Get 10% off your first order",
-      "sub": "New arrivals, craft stories & exclusive offers. No spam — ever.",
-      "cta": "Get 10% off",
-      "note": "By subscribing you agree to our privacy policy. Unsubscribe anytime."
     }
   },
   "about": {
@@ -209,7 +209,7 @@
       "sub": "Questions, wholesale enquiries, or just want to talk textiles — we're here, and we reply within 24 hours."
     },
     "email": "hello@theweavingco.in",
-    "whatsapp_number": "+91 98765 43210",
+    "whatsapp_number": "+91 9417637186",
     "whatsapp_hours": "Mon–Sat, 10am–6pm",
     "office_location": "Amritsar, Punjab, India",
     "wholesale_email": "wholesale@theweavingco.in",
