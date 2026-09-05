@@ -19,5 +19,272 @@
       });
     }
   </script>
+
+  <!-- ── Branded live previews, so the eye icon shows something that looks like the
+       real website instead of a plain list of field values. Written as plain
+       React.createElement calls (via the "h" / "createClass" globals Decap CMS
+       exposes) so no build step or JSX compiler is needed. ── -->
+  <script>
+  (function () {
+    if (typeof CMS === 'undefined' || typeof h === 'undefined' || typeof createClass === 'undefined') return;
+
+    CMS.registerPreviewStyle(
+      '' +
+      '@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap");' +
+      'body{background:#081527;color:#cfc3a6;font-family:Inter,Arial,sans-serif;margin:0;padding:0;}' +
+      '.twcp-wrap{max-width:900px;margin:0 auto;padding:32px 24px;}' +
+      '.twcp-eyebrow{font-size:11px;letter-spacing:0.18em;color:#a5844f;text-transform:uppercase;margin-bottom:10px;}' +
+      '.twcp-h1{font-family:"EB Garamond",Georgia,serif;font-size:34px;font-weight:500;color:#f0e6d0;line-height:1.25;margin:0 0 14px;}' +
+      '.twcp-h2{font-family:"EB Garamond",Georgia,serif;font-size:24px;font-weight:500;color:#f0e6d0;line-height:1.3;margin:0 0 10px;}' +
+      '.twcp-sub{font-size:14px;color:#b0a080;line-height:1.6;max-width:560px;margin:0 0 18px;}' +
+      '.twcp-section{padding:26px 0;border-bottom:1px solid #1a2f47;}' +
+      '.twcp-btnrow{display:flex;gap:10px;margin:14px 0 6px;flex-wrap:wrap;}' +
+      '.twcp-btn{padding:9px 20px;border-radius:3px;font-size:12px;letter-spacing:0.05em;}' +
+      '.twcp-btn-royal{background:#a5844f;color:#081527;}' +
+      '.twcp-btn-ghost{background:transparent;color:#f0e6d0;border:1px solid #2a3f5a;}' +
+      '.twcp-tagline{text-align:center;color:#bc9961;letter-spacing:0.2em;font-size:13px;padding:18px 0;}' +
+      '.twcp-stats{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap;}' +
+      '.twcp-stat{flex:1;min-width:140px;background:#0d1d30;border:1px solid #1a2f47;border-radius:8px;padding:14px;}' +
+      '.twcp-stat-num{font-family:"EB Garamond",Georgia,serif;font-size:26px;color:#a5844f;}' +
+      '.twcp-stat-label{font-size:11px;color:#b0a080;margin-top:4px;}' +
+      '.twcp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:16px;}' +
+      '.twcp-card{background:#0d1d30;border:1px solid #1a2f47;border-radius:8px;padding:14px;}' +
+      '.twcp-card-title{font-size:13px;font-weight:600;color:#f0e6d0;margin-bottom:4px;}' +
+      '.twcp-card-body{font-size:12px;color:#b0a080;line-height:1.5;}' +
+      '.twcp-pill{display:inline-block;background:#0d1d30;border:1px solid #a5844f;color:#bc9961;border-radius:20px;padding:5px 14px;font-size:11px;margin:4px 6px 4px 0;}' +
+      '.twcp-review{background:#0d1d30;border:1px solid #1a2f47;border-radius:8px;padding:16px;margin-top:12px;}' +
+      '.twcp-review-quote{font-size:13px;color:#e6dcc3;font-style:italic;margin-bottom:8px;}' +
+      '.twcp-review-author{font-size:12px;color:#a5844f;font-weight:600;}' +
+      '.twcp-review-loc{font-size:11px;color:#7a6e5a;}' +
+      '.twcp-img{width:100%;height:140px;object-fit:cover;border-radius:8px;background:#0d1d30;}' +
+      '.twcp-pcard{background:#0d1d30;border:1px solid #1a2f47;border-radius:8px;overflow:hidden;}' +
+      '.twcp-pcard-body{padding:10px 12px;}' +
+      '.twcp-pname{font-size:12px;color:#f0e6d0;font-weight:600;}' +
+      '.twcp-pmat{font-size:10px;color:#7a6e5a;margin:2px 0 6px;}' +
+      '.twcp-pprice{font-size:13px;color:#a5844f;font-weight:600;}' +
+      '.twcp-pwas{font-size:10px;color:#7a6e5a;text-decoration:line-through;margin-left:6px;}' +
+      '.twcp-badge{display:inline-block;font-size:9px;background:#081527;color:#f0e6d0;padding:2px 8px;border-radius:2px;margin-bottom:6px;}' +
+      '.twcp-oos{background:#5a2a2a;color:#f0c9c9;}' +
+      '.twcp-divider{text-align:center;color:#a5844f;letter-spacing:0.3em;padding:16px 0;}'
+    );
+
+    function get(entry, path, fallback) {
+      var v = entry.getIn(path);
+      if (v === undefined || v === null) return fallback !== undefined ? fallback : '';
+      return (v && typeof v.toJS === 'function') ? v.toJS() : v;
+    }
+
+    /* ── Website Text (home + about) preview ── */
+    var ContentPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var home = ['home'];
+        var about = ['about'];
+        var stats = get(entry, home.concat(['story', 'stats']), []);
+        var cards = get(entry, home.concat(['categories', 'cards']), []);
+        var pills = get(entry, home.concat(['craft', 'pills']), []);
+        var reviews = get(entry, home.concat(['reviews', 'items']), []);
+        var giftPills = get(entry, home.concat(['gifting', 'pills']), []);
+        var values = get(entry, about.concat(['values', 'items']), []);
+        var team = get(entry, about.concat(['team', 'members']), []);
+
+        return h('div', { className: 'twcp-wrap' }, [
+          h('div', { key: 'homelabel', className: 'twcp-divider' }, '✦ HOME PAGE PREVIEW ✦'),
+
+          h('div', { key: 'hero', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['hero', 'eyebrow']))),
+            h('h1', { key: 't', className: 'twcp-h1' }, [
+              get(entry, home.concat(['hero', 'title_line1'])), h('br', { key: 'br' }),
+              get(entry, home.concat(['hero', 'title_line2']))
+            ]),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['hero', 'sub']))),
+            h('div', { key: 'btns', className: 'twcp-btnrow' }, [
+              h('div', { key: '1', className: 'twcp-btn twcp-btn-royal' }, (get(entry, home.concat(['hero', 'cta_primary'])) || '') + ' →'),
+              h('div', { key: '2', className: 'twcp-btn twcp-btn-ghost' }, (get(entry, home.concat(['hero', 'cta_secondary'])) || '') + ' →')
+            ])
+          ]),
+
+          h('div', { key: 'tagline', className: 'twcp-tagline' }, get(entry, home.concat(['brand_tagline']))),
+
+          h('div', { key: 'story', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['story', 'label']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, [
+              get(entry, home.concat(['story', 'title_line1'])), h('br', { key: 'br' }),
+              get(entry, home.concat(['story', 'title_line2']))
+            ]),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['story', 'body']))),
+            h('div', { key: 'stats', className: 'twcp-stats' }, stats.map(function (st, i) {
+              return h('div', { key: i, className: 'twcp-stat' }, [
+                h('div', { key: 'n', className: 'twcp-stat-num' }, st.num),
+                h('div', { key: 'l', className: 'twcp-stat-label' }, st.label)
+              ]);
+            }))
+          ]),
+
+          h('div', { key: 'cats', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['categories', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['categories', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['categories', 'sub']))),
+            h('div', { key: 'grid', className: 'twcp-grid' }, cards.map(function (c, i) {
+              return h('div', { key: i, className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, c.name),
+                h('div', { key: 'd', className: 'twcp-card-body' }, c.desc)
+              ]);
+            }))
+          ]),
+
+          h('div', { key: 'best', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['bestsellers', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['bestsellers', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['bestsellers', 'sub'])))
+          ]),
+
+          h('div', { key: 'craft', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['craft', 'label']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, [
+              get(entry, home.concat(['craft', 'title_line1'])), h('br', { key: 'br' }),
+              get(entry, home.concat(['craft', 'title_line2']))
+            ]),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['craft', 'body']))),
+            h('div', { key: 'pills' }, pills.map(function (p, i) {
+              return h('span', { key: i, className: 'twcp-pill' }, p);
+            })),
+            h('div', { key: 'link', style: { marginTop: '10px', color: '#a5844f', fontSize: '12px' } }, (get(entry, home.concat(['craft', 'link_text'])) || '') + ' →')
+          ]),
+
+          h('div', { key: 'reviews', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['reviews', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['reviews', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['reviews', 'sub']))),
+            reviews.map(function (r, i) {
+              return h('div', { key: i, className: 'twcp-review' }, [
+                h('div', { key: 'q', className: 'twcp-review-quote' }, '"' + r.quote + '"'),
+                h('div', { key: 'a', className: 'twcp-review-author' }, r.name),
+                h('div', { key: 'l', className: 'twcp-review-loc' }, r.location)
+              ]);
+            })
+          ]),
+
+          h('div', { key: 'gift', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['gifting', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['gifting', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['gifting', 'sub']))),
+            h('div', { key: 'pills' }, giftPills.map(function (p, i) {
+              return h('span', { key: i, className: 'twcp-pill' }, p.label);
+            }))
+          ]),
+
+          h('div', { key: 'gallery', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['gallery_section', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['gallery_section', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['gallery_section', 'sub'])))
+          ]),
+
+          h('div', { key: 'nl', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, home.concat(['newsletter', 'eyebrow']))),
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, home.concat(['newsletter', 'heading']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, home.concat(['newsletter', 'sub']))),
+            h('div', { key: 'c', className: 'twcp-btn twcp-btn-royal', style: { display: 'inline-block' } }, (get(entry, home.concat(['newsletter', 'cta'])) || '') + ' →')
+          ]),
+
+          h('div', { key: 'aboutlabel', className: 'twcp-divider' }, '✦ ABOUT PAGE PREVIEW ✦'),
+
+          h('div', { key: 'abouthero', className: 'twcp-section' }, [
+            h('div', { key: 'e', className: 'twcp-eyebrow' }, get(entry, about.concat(['hero', 'label']))),
+            h('h1', { key: 't', className: 'twcp-h1' }, [
+              get(entry, about.concat(['hero', 'title_line1'])), h('br', { key: 'br' }),
+              get(entry, about.concat(['hero', 'title_line2']))
+            ]),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, about.concat(['hero', 'sub'])))
+          ]),
+
+          h('div', { key: 'aboutstory', className: 'twcp-section' }, [
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, about.concat(['story', 'title']))),
+            h('p', { key: 'p1', className: 'twcp-sub' }, get(entry, about.concat(['story', 'paragraph1']))),
+            h('p', { key: 'p2', className: 'twcp-sub' }, get(entry, about.concat(['story', 'paragraph2'])))
+          ]),
+
+          h('div', { key: 'aboutvalues', className: 'twcp-section' }, [
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, about.concat(['values', 'title']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, about.concat(['values', 'sub']))),
+            h('div', { key: 'grid', className: 'twcp-grid' }, values.map(function (v, i) {
+              return h('div', { key: i, className: 'twcp-card' }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, v.title),
+                h('div', { key: 'd', className: 'twcp-card-body' }, v.body)
+              ]);
+            }))
+          ]),
+
+          h('div', { key: 'aboutteam', className: 'twcp-section', style: { borderBottom: 'none' } }, [
+            h('h2', { key: 't', className: 'twcp-h2' }, get(entry, about.concat(['team', 'title']))),
+            h('p', { key: 's', className: 'twcp-sub' }, get(entry, about.concat(['team', 'sub']))),
+            h('div', { key: 'grid', className: 'twcp-grid' }, team.map(function (m, i) {
+              return h('div', { key: i, className: 'twcp-card', style: { textAlign: 'center' } }, [
+                h('div', { key: 'n', className: 'twcp-card-title' }, m.name),
+                h('div', { key: 'd', className: 'twcp-card-body' }, m.role)
+              ]);
+            }))
+          ])
+        ]);
+      }
+    });
+
+    /* ── Products preview ── */
+    var ProductsPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var getAsset = this.props.getAsset;
+        var products = get(entry, ['products'], []);
+        return h('div', { className: 'twcp-wrap' }, [
+          h('div', { key: 'lbl', className: 'twcp-divider' }, '✦ SHOP GRID PREVIEW ✦'),
+          h('div', { key: 'grid', className: 'twcp-grid' }, products.map(function (p, i) {
+            var cover = (p.photos && p.photos.length) ? p.photos[0] : null;
+            var src = cover ? (getAsset ? getAsset(cover).toString() : cover) : '';
+            var inStock = p.in_stock !== false;
+            return h('div', { key: i, className: 'twcp-pcard' }, [
+              src
+                ? h('img', { key: 'img', className: 'twcp-img', src: src, style: inStock ? {} : { filter: 'grayscale(0.6)', opacity: 0.7 } })
+                : h('div', { key: 'img', className: 'twcp-img' }),
+              h('div', { key: 'body', className: 'twcp-pcard-body' }, [
+                inStock
+                  ? (p.badge ? h('div', { key: 'b', className: 'twcp-badge' }, p.badge) : null)
+                  : h('div', { key: 'b', className: 'twcp-badge twcp-oos' }, 'Out of stock'),
+                h('div', { key: 'n', className: 'twcp-pname' }, p.name),
+                h('div', { key: 'm', className: 'twcp-pmat' }, p.material),
+                h('span', { key: 'pr', className: 'twcp-pprice' }, p.price),
+                p.was_price ? h('span', { key: 'w', className: 'twcp-pwas' }, p.was_price) : null
+              ])
+            ]);
+          }))
+        ]);
+      }
+    });
+
+    /* ── Gallery preview ── */
+    var GalleryPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var getAsset = this.props.getAsset;
+        var images = get(entry, ['images'], []);
+        return h('div', { className: 'twcp-wrap' }, [
+          h('div', { key: 'lbl', className: 'twcp-divider' }, '✦ PHOTO GALLERY PREVIEW ✦'),
+          h('div', { key: 'grid', className: 'twcp-grid' }, images.map(function (img, i) {
+            var src = img.photo ? (getAsset ? getAsset(img.photo).toString() : img.photo) : '';
+            return h('div', { key: i, className: 'twcp-pcard' }, [
+              src ? h('img', { key: 'img', className: 'twcp-img', src: src, alt: img.alt || '' }) : h('div', { key: 'img', className: 'twcp-img' }),
+              h('div', { key: 'body', className: 'twcp-pcard-body' }, [
+                h('div', { key: 'a', className: 'twcp-card-body' }, img.alt || '(no description)')
+              ])
+            ]);
+          }))
+        ]);
+      }
+    });
+
+    CMS.registerPreviewTemplate('content', ContentPreview);
+    CMS.registerPreviewTemplate('products', ProductsPreview);
+    CMS.registerPreviewTemplate('gallery', GalleryPreview);
+  })();
+  </script>
 </body>
 </html>
